@@ -20,11 +20,6 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
-variable "certificate_arn" {
-  description = "ARN of the ACM certificate for HTTPS"
-  type        = string
-}
-
 variable "container_port" {
   description = "Port the container listens on"
   type        = number

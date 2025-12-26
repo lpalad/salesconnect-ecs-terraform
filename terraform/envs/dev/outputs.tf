@@ -1,10 +1,10 @@
 # Development Environment Outputs
 # These values are displayed after terraform apply
 
-# Application URL
+# Application URL (via ALB)
 output "app_url" {
   description = "URL to access the application"
-  value       = module.acm_route53.app_url
+  value       = "http://${module.alb.alb_dns_name}"
 }
 
 # ALB Information
@@ -70,4 +70,10 @@ output "ecs_update_command" {
 output "logs_command" {
   description = "Command to tail ECS logs"
   value       = "aws logs tail ${module.iam.cloudwatch_log_group_name} --follow --region ${var.aws_region}"
+}
+
+# Manual CNAME setup instruction
+output "cname_setup" {
+  description = "Add this CNAME record in CrazyDomains"
+  value       = "Add CNAME: terraform.salesconnect.com.au -> ${module.alb.alb_dns_name}"
 }

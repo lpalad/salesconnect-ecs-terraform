@@ -44,20 +44,7 @@ module "iam" {
   environment  = var.environment
 }
 
-# ACM/Route53 Module - SSL Certificate and DNS
-# Note: ALB must be created first to get DNS name
-module "acm_route53" {
-  source = "../../modules/acm_route53"
-
-  project_name = var.project_name
-  environment  = var.environment
-  domain_name  = var.domain_name
-  subdomain    = var.subdomain
-  alb_dns_name = module.alb.alb_dns_name
-  alb_zone_id  = module.alb.alb_zone_id
-}
-
-# ALB Module - Application Load Balancer
+# ALB Module - Application Load Balancer (HTTP only, no certificate)
 module "alb" {
   source = "../../modules/alb"
 
@@ -65,11 +52,8 @@ module "alb" {
   environment       = var.environment
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
-  certificate_arn   = module.acm_route53.certificate_arn
   container_port    = var.container_port
   health_check_path = "/health"
-
-  depends_on = [module.acm_route53]
 }
 
 # ECS Module - Cluster, Service, Task Definition
@@ -90,6 +74,4 @@ module "ecs" {
   task_cpu                  = var.task_cpu
   task_memory               = var.task_memory
   desired_count             = var.desired_count
-
-  depends_on = [module.alb, module.iam]
 }
