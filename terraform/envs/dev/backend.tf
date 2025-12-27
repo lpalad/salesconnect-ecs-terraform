@@ -3,7 +3,7 @@
 
 terraform {
   backend "s3" {
-    bucket         = "salesconnect-terraform-state-480126395708"
+    bucket         = "salesconnect-terraform-state-<YOUR-ACCOUNT-ID>"
     key            = "dev/terraform.tfstate"
     region         = "ap-southeast-2"
     dynamodb_table = "salesconnect-terraform-locks"

@@ -92,7 +92,7 @@ See [BUILD_GUIDE.md](BUILD_GUIDE.md) for complete step-by-step instructions.
 ```bash
 # 1. Bootstrap Terraform backend
 cd terraform/envs/dev
-aws s3 mb s3://salesconnect-terraform-state-480126395708 --region ap-southeast-2
+aws s3 mb s3://salesconnect-terraform-state-<YOUR-ACCOUNT-ID> --region ap-southeast-2
 aws dynamodb create-table \
     --table-name salesconnect-terraform-locks \
     --attribute-definitions AttributeName=LockID,AttributeType=S \

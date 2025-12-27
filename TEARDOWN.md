@@ -138,7 +138,7 @@ aws ecr batch-delete-image \
 
 **DO NOT DELETE** the S3 bucket and DynamoDB table used for Terraform state:
 
-- `s3://salesconnect-terraform-state-480126395708`
+- `s3://salesconnect-terraform-state-<YOUR-ACCOUNT-ID>`
 - `salesconnect-terraform-locks` (DynamoDB)
 
 These cost almost nothing (<$0.01/month) and you need them to rebuild.
@@ -147,8 +147,8 @@ If you really want to delete them:
 
 ```bash
 # Empty and delete S3 bucket
-aws s3 rm s3://salesconnect-terraform-state-480126395708 --recursive
-aws s3 rb s3://salesconnect-terraform-state-480126395708
+aws s3 rm s3://salesconnect-terraform-state-<YOUR-ACCOUNT-ID> --recursive
+aws s3 rb s3://salesconnect-terraform-state-<YOUR-ACCOUNT-ID>
 
 # Delete DynamoDB table
 aws dynamodb delete-table \
@@ -204,10 +204,10 @@ Then rebuild and push Docker image:
 
 ```bash
 cd ../../../app
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com
 docker build -t salesconnect-api .
-docker tag salesconnect-api:latest 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
-docker push 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
+docker tag salesconnect-api:latest <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
+docker push <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
 ```
 
 ---

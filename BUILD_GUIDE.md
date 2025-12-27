@@ -16,7 +16,7 @@ Before starting, ensure you have:
 Verify AWS connection:
 ```bash
 aws sts get-caller-identity
-# Should show account: 480126395708
+# Should show your account ID
 ```
 
 ---
@@ -28,14 +28,14 @@ Terraform needs a place to store its state file. We use S3 + DynamoDB for this.
 ### Step 1.1: Create S3 Bucket for State
 
 ```bash
-aws s3 mb s3://salesconnect-terraform-state-480126395708 --region ap-southeast-2
+aws s3 mb s3://salesconnect-terraform-state-<YOUR-ACCOUNT-ID> --region ap-southeast-2
 ```
 
 ### Step 1.2: Enable Versioning (Recommended)
 
 ```bash
 aws s3api put-bucket-versioning \
-    --bucket salesconnect-terraform-state-480126395708 \
+    --bucket salesconnect-terraform-state-<YOUR-ACCOUNT-ID> \
     --versioning-configuration Status=Enabled
 ```
 
@@ -118,7 +118,7 @@ Type `yes` when prompted.
 After apply completes, note these values:
 ```
 alb_dns_name = "salesconnect-alb-xxxxx.ap-southeast-2.elb.amazonaws.com"
-ecr_repository_url = "480126395708.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api"
+ecr_repository_url = "<YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api"
 app_url = "https://terraform.salesconnect.com.au"
 ```
 
@@ -135,7 +135,7 @@ cd ../../../app
 ### Step 3.2: Authenticate Docker to ECR
 
 ```bash
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com
 ```
 
 Expected output:
@@ -152,13 +152,13 @@ docker build -t salesconnect-api .
 ### Step 3.4: Tag Image for ECR
 
 ```bash
-docker tag salesconnect-api:latest 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
+docker tag salesconnect-api:latest <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
 ```
 
 ### Step 3.5: Push Image to ECR
 
 ```bash
-docker push 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
+docker push <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com/salesconnect-api:latest
 ```
 
 ### Step 3.6: Force ECS Service Update
@@ -262,7 +262,7 @@ aws logs tail /ecs/salesconnect-dev --follow --region ap-southeast-2
 
 ### Error: "AccessDenied" on ECR push
 ```bash
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 480126395708.dkr.ecr.ap-southeast-2.amazonaws.com
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin <YOUR-ACCOUNT-ID>.dkr.ecr.ap-southeast-2.amazonaws.com
 ```
 
 ### ECS Task keeps restarting
